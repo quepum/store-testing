@@ -9,6 +9,11 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        browser: ["chrome", "firefox"]
+        language: ["en", "ru"]
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -23,6 +28,15 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run PyTest tests
+      - name: Run tests with PyTest
         run: |
-          pytest tests/
+          pytest tests/ \
+            --browser_name=$BROWSER_NAME \
+            --language=$LANGUAGE
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-$BROWSER_NAME-$LANGUAGE
+          path: |
+            ./html-report/
