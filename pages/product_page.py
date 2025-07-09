@@ -1,4 +1,6 @@
-﻿from pages.base_page import BasePage
+﻿from selenium.webdriver.common.by import By
+
+from pages.base_page import BasePage
 from pages.locators import ProductPageLocators
 
 
@@ -15,14 +17,12 @@ class ProductPage(BasePage):
         return self.browser.find_element(*ProductPageLocators.PRODUCT_PRICE).text
 
     def get_success_message(self):
-        full_text = self.browser.find_element(*ProductPageLocators.SUCCESS_MESSAGE).text
-
-        clean_text = full_text.replace("×", "").strip()
-
-        if "has been added" in clean_text:
-            clean_text = clean_text.split("has been added")[0].strip()
-
-        return clean_text
+        locator = (
+            By.XPATH,
+            "//div[@id='messages']//div[contains(@class, 'alert-success')][1]//strong"
+        )
+        element = self.browser.find_element(*locator)
+        return element.text.strip()
 
     def get_basket_total(self):
         return self.browser.find_element(*ProductPageLocators.TOTAL_PRICE).text
