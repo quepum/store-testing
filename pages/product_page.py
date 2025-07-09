@@ -1,7 +1,8 @@
-﻿from pages.base_page import BasePage
+﻿import re
+import time
+
+from pages.base_page import BasePage
 from pages.locators import ProductPageLocators
-from selenium.common.exceptions import NoAlertPresentException
-import math
 
 
 class ProductPage(BasePage):
@@ -17,7 +18,14 @@ class ProductPage(BasePage):
         return self.browser.find_element(*ProductPageLocators.PRODUCT_PRICE).text
 
     def get_success_message(self):
-        return self.browser.find_element(*ProductPageLocators.SUCCESS_MESSAGE).text
+        full_text = self.browser.find_element(*ProductPageLocators.SUCCESS_MESSAGE).text
+
+        clean_text = full_text.replace("×", "").strip()
+
+        if "has been added" in clean_text:
+            clean_text = clean_text.split("has been added")[0].strip()
+
+        return clean_text
 
     def get_basket_total(self):
         return self.browser.find_element(*ProductPageLocators.TOTAL_PRICE).text
@@ -28,17 +36,3 @@ class ProductPage(BasePage):
 
         assert self.get_product_price() in self.get_basket_total(), \
             f"Цена товара {self.get_product_price()} и сумма корзины {self.get_basket_total()} не совпадают"
-
-    def solve_quiz_and_get_code(self):
-        alert = self.browser.switch_to.alert
-        x = alert.text.split(" ")[2]
-        answer = str(math.log(abs((12 * math.sin(float(x))))))
-        alert.send_keys(answer)
-        alert.accept()
-        try:
-            alert = self.browser.switch_to.alert
-            alert_text = alert.text
-            print(f"Your code: {alert_text}")
-            alert.accept()
-        except NoAlertPresentException:
-            print("No second alert presented")
