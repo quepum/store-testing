@@ -1,5 +1,4 @@
-﻿from pages.locators import MainPageLocators
-from pages.main_page import MainPage
+﻿from pages.main_page import MainPage
 from pages.login_page import LoginPage
 import pytest
 
@@ -19,4 +18,4 @@ class TestLoginFromMainPage:
     def test_guest_should_see_login_link(self, browser):
         page = MainPage(browser, link)
         page.open()
-        assert page.is_element_present(*MainPageLocators.LOGIN_LINK), "Login link is not present."
+        page.should_be_login_link()

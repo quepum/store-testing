@@ -36,7 +36,7 @@ class ProductPage(BasePage):
             "Success message did not disappear, but should"
 
     def should_be_added_to_basket(self):
-        assert self.get_product_name() in self.get_success_message(), \
+        assert self.get_product_name() == self.get_success_message(), \
             f"Название товара в корзине не совпадает ({self.get_product_name()}, {self.get_success_message()})"
 
         assert self.get_product_price() in self.get_basket_total(), \
