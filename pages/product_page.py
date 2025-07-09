@@ -1,7 +1,4 @@
-﻿import re
-import time
-
-from pages.base_page import BasePage
+﻿from pages.base_page import BasePage
 from pages.locators import ProductPageLocators
 
 
@@ -29,6 +26,14 @@ class ProductPage(BasePage):
 
     def get_basket_total(self):
         return self.browser.find_element(*ProductPageLocators.TOTAL_PRICE).text
+
+    def should_not_be_success_message(self):
+        assert self.is_not_element_present(*ProductPageLocators.SUCCESS_MESSAGE), \
+            "Success message is presented, but should not be"
+
+    def should_disappear_success_message(self):
+        assert self.is_disappeared(*ProductPageLocators.SUCCESS_MESSAGE), \
+            "Success message did not disappear, but should"
 
     def should_be_added_to_basket(self):
         assert self.get_product_name() in self.get_success_message(), \

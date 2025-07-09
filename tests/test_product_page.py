@@ -2,6 +2,7 @@
 import pytest
 
 product_base_link = "https://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207"
+new_link = "https://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer0"
 
 
 @pytest.mark.parametrize('promo_offer',
@@ -17,3 +18,25 @@ def test_guest_can_add_product_to_basket(browser, promo_offer):
     product_in_message = page.get_success_message()
     assert product_name == product_in_message, \
         f"Product name in message does not match expected"
+
+
+@pytest.mark.xfail(reason="the user is not authorized")
+def test_guest_cant_see_success_message_after_adding_product_to_basket(browser):
+    page = ProductPage(browser, new_link)
+    page.open()
+    page.add_to_basket()
+    page.should_not_be_success_message()
+
+
+def test_guest_cant_see_success_message(browser):
+    page = ProductPage(browser, new_link)
+    page.open()
+    page.should_not_be_success_message()
+
+
+@pytest.mark.xfail(reason="default")
+def test_message_disappeared_after_adding_product_to_basket(browser):
+    page = ProductPage(browser, new_link)
+    page.open()
+    page.add_to_basket()
+    page.should_disappear_success_message()
